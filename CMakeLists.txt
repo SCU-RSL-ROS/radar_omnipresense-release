@@ -16,7 +16,11 @@ find_package(catkin REQUIRED COMPONENTS
 
 ## System dependencies are found with CMake's conventions
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR})
-find_package(rapidjson REQUIRED)
+find_package(RapidJSON REQUIRED)
+#ok, so, the FindRapidJSON.cmake file will have set RAPIDJ.. but here cmake thinks it's
+#going to be RapidJ and warn us.  Hack FindRapidJSON to set both and quell the warning
+include_directories("${RapidJSON_INCLUDE_DIRS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${RAPIDJSON_CXX_FLAGS}")
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -53,6 +57,7 @@ find_package(rapidjson REQUIRED)
    FILES
    radar_data.msg
    fft.msg
+   raw.msg
  )
 
 ## Generate services in the 'srv' folder
@@ -104,12 +109,17 @@ find_package(rapidjson REQUIRED)
 catkin_package(
 #  INCLUDE_DIRS include
   CATKIN_DEPENDS roscpp rospy std_msgs message_generation
-#  DEPENDS system_lib
+  DEPENDS RapidJSON
+  #DEPENDS rapidjson-dev
 )
 
-set(LCC_LINK_FLAG "-lLinuxCommConnection")
-add_executable(radar_publisher src/radar_publisher.cpp)
-target_link_libraries(radar_publisher ${catkin_LIBRARIES} ${RAPIDJSONDIR} ${LCC_LINK_FLAG})
+include_directories(${PROJECT_SOURCE_DIR}/lib)
+add_subdirectory(${PROJECT_SOURCE_DIR}/lib)
+
+
+
+add_executable(radar_publisher src/radar_publisher.cpp lib/SerialConnection.cpp)
+target_link_libraries(radar_publisher ${catkin_LIBRARIES})
 add_dependencies(radar_publisher radar_omnipresense_generate_messages_cpp)
 
 ###########
@@ -121,7 +131,7 @@ add_dependencies(radar_publisher radar_omnipresense_generate_messages_cpp)
 include_directories(
 # include
   ${catkin_INCLUDE_DIRS}
-  ${RAPIDJSON_INCLUDE_DIRS}
+ # ${RAPIDJSON_INCLUDE_DIRS}
 )
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -188,10 +198,12 @@ include_directories(
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_radar_data.cpp)
-# if(TARGET ${PROJECT_NAME}-test)
-#   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
-# endif()
+if(CATKIN_ENABLE_TESTING)
+	catkin_add_gtest(${PROJECT_NAME}-test src/test/utest.cpp)
+	if(TARGET ${PROJECT_NAME}-test)
+		target_link_libraries(${PROJECT_NAME}-test)
+	endif()
+endif()
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
