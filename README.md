@@ -1,3 +1,26 @@
+## radar_omnipresense (kinetic) - 0.3.0-0
+
+The packages in the `radar_omnipresense` repository were released into the `kinetic` distro by running `/usr/bin/bloom-release radar_omnipresense --rosdistro kinetic` on `Thu, 13 Sep 2018 17:16:53 -0000`
+
+The `radar_omnipresense` package was released.
+
+Version of package(s) in repository `radar_omnipresense`:
+
+- upstream repository: https://github.com/SCU-RSL-ROS/radar_omnipresense.git
+- release repository: https://github.com/SCU-RSL-ROS/radar_omnipresense-release.git
+- rosdistro version: `0.2.0-0`
+- old version: `0.2.0-0`
+- new version: `0.3.0-0`
+
+Versions of tools used:
+
+- bloom version: `0.6.6`
+- catkin_pkg version: `0.4.1`
+- rosdep version: `0.12.2`
+- rosdistro version: `0.6.8`
+- vcstools version: `0.1.40`
+
+
 ## radar_omnipresense (melodic) - 0.2.0-0
 
 The packages in the `radar_omnipresense` repository were released into the `melodic` distro by running `/usr/bin/bloom-release radar_omnipresense --track melodic --rosdistro melodic --new-track` on `Tue, 05 Jun 2018 22:58:08 -0000`
